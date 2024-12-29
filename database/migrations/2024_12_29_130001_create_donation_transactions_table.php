@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('donation_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->decimal('amount', 10, 2);
+            $table->decimal('amount', 10);
             $table->timestamps();
         });
     }
