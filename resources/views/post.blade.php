@@ -16,11 +16,24 @@
             <div class="bg-white rounded-lg shadow-md p-6">
 
                 <div class="mb-4">
-                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="border rounded-lg shadow-md w-full h-[500px]">
+                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="border rounded-lg shadow-md w-full h-[500px] object-cover">
                 </div>
 
                 <div class="mb-4">
                     <p class="text-gray-700 text-xl">{{ $post->caption }}</p>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-lg font-bold mb-4">Komentar</h4>
+                    @forelse($post->comments as $comment)
+                        <div class="mb-4 border-b pb-4">
+                            <p class="text-gray-800"><strong>{{ $comment->user_name }}</strong></p> <!-- Nama Pengguna -->
+                            <p class="text-gray-700">{{ $comment->comment }}</p>
+                            <p class="text-sm text-gray-500">{{ $comment->created_at->diffForHumans() }}</p>
+                        </div>
+                    @empty
+                        <p class="text-gray-500">Belum ada komentar.</p>
+                    @endforelse
                 </div>
 
                 <!-- Form Tambah Komentar -->
@@ -39,19 +52,6 @@
                             Kirim Komentar
                         </button>
                     </form>
-                </div>
-
-                <div class="mt-6">
-                    <h4 class="text-lg font-bold mb-4">Komentar</h4>
-                    @forelse($post->comments as $comment)
-                        <div class="mb-4 border-b pb-4">
-                            <p class="text-gray-800"><strong>{{ $comment->user_name }}</strong></p> <!-- Nama Pengguna -->
-                            <p class="text-gray-700">{{ $comment->comment }}</p>
-                            <p class="text-sm text-gray-500">{{ $comment->created_at->diffForHumans() }}</p>
-                        </div>
-                    @empty
-                        <p class="text-gray-500">Belum ada komentar.</p>
-                    @endforelse
                 </div>
 
             </div>

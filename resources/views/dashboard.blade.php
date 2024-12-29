@@ -49,6 +49,10 @@
                         <div class="p-4">
                             <p class="text-gray-600 text-sm mt-2 truncate" style="max-width: 100%;">{{ $post->caption }}</p>
 
+                            <p class="text-gray-500 text-sm mt-2">
+                                {{ $post->comments->count() }} Komentar
+                            </p>
+
                             <div class="mt-4">
                                 <a href="{{ route('posts.show', $post) }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Lihat Postingan</a>
                             </div>
