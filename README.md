@@ -61,7 +61,7 @@ php artisan serve
 php artisan migrate:fresh --seed
 ```
 
-Kemudian login dengan untuk role Admin:
+Kemudian login untuk role Admin:
 -   Email: admin@mail.com
 -   Password: admin123
 
