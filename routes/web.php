@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +22,9 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('donations', DonationController::class);
 
+    Route::resource('posts', PostController::class);
+
+    Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
 });
 
 require __DIR__.'/auth.php';

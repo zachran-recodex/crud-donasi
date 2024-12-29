@@ -4,19 +4,14 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 
 class DonationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
-        // Menambahkan data contoh ke dalam tabel donations
         DB::table('donations')->insert([
             'title' => 'Donasi Pendidikan',
             'image' => 'donations/education.jpg', // Misalnya gambar ini sudah ada di storage

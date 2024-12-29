@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Donation;
 use App\Models\DonationTransaction;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,8 +13,9 @@ class DashboardController extends Controller
     public function index()
     {
         $donations = Donation::where('status', true)->get();
+        $posts = Post::orderByDesc('id')->paginate(10);
 
-        return view('dashboard', compact('donations'));
+        return view('dashboard', compact('donations', 'posts'));
     }
 
     public function showDonation(Donation $donation)
@@ -31,18 +33,15 @@ class DashboardController extends Controller
             'amount' => 'required|numeric|min:1',
         ]);
 
-        // Simpan transaksi donasi
         $donationTransaction = DonationTransaction::create([
             'donation_id' => $donation->id,
             'user_id' => Auth::id(),
             'amount' => $request->amount,
         ]);
 
-        // Update total_donated pada tabel Donation
         $donation->total_donated += $request->amount;
         $donation->save();
 
-        // Redirect dengan pesan sukses
         return redirect()->route('donate', ['donation' => $donation])->with('success', 'Terima kasih telah berdonasi!');
     }
 }

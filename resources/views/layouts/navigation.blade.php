@@ -17,6 +17,12 @@
                     </x-nav-link>
                 </div>
 
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.index')">
+                        Postingan
+                    </x-nav-link>
+                </div>
+
                 <!-- Donasi Link hanya untuk admin -->
                 @if(Auth::user()->hasRole('super admin')) <!-- Memeriksa apakah pengguna memiliki role admin -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -79,6 +85,12 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+        </div>
+
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.index')">
+                Postingan
             </x-responsive-nav-link>
         </div>
 

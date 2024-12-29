@@ -2,9 +2,9 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Buat Donasi Baru
+                Buat Postingan Baru
             </h2>
-            <a href="{{ route('donations.index') }}"
+            <a href="{{ route('posts.index') }}"
                class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                 Kembali
             </a>
@@ -25,24 +25,12 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('donations.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
-                                Nama Donasi
-                            </label>
-                            <input type="text"
-                                   name="title"
-                                   id="title"
-                                   class="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                   value="{{ old('title') }}"
-                                   required>
-                        </div>
-
-                        <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
-                                Gambar Donasi
+                                Gambar
                             </label>
                             <input type="file"
                                    name="image"
@@ -54,26 +42,13 @@
 
                         <div class="mb-6">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
-                                Deskripsi
+                                Caption
                             </label>
-                            <textarea name="description"
-                                      id="description"
+                            <textarea name="caption"
+                                      id="caption"
                                       class="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                       rows="3"
-                                      required>{{ old('description') }}</textarea>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
-                                Status
-                            </label>
-                            <select name="status"
-                                    id="status"
-                                    class="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    required>
-                                <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Aktif</option>
-                                <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Nonaktif</option>
-                            </select>
+                                      required>{{ old('caption') }}</textarea>
                         </div>
 
                         <div class="flex items-center justify-between">
