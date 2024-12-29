@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Donation;
 use Illuminate\Http\Request;
+use Storage;
 
 class DonationController extends Controller
 {
     public function index()
     {
-        $donations = Donation::orderBy('created_at', 'desc')->get();
+        $donations = Donation::orderByDesc('id')->paginate(10);
         return view('donations.index', compact('donations'));
     }
 
@@ -21,16 +22,26 @@ class DonationController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'donor_name' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:1',
-            'payment_method' => 'required|string',
-            'message' => 'nullable|string'
+            'title' => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'description' => 'required|string',
+            'status' => 'required|boolean'
         ]);
 
-        Donation::create($validated);
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('donations', 'public');
+            $validated['image'] = $path;
+        }
 
-        return redirect()->route('donations.index')
+        $donation = Donation::create($validated);
+
+        return redirect()->route('donations.index', compact('donation'))
             ->with('success', 'Terima kasih atas donasi Anda!');
+    }
+
+    public function show(Donation $donation)
+    {
+        return view('donations.show', compact('donation'));
     }
 
     public function edit(Donation $donation)
@@ -41,11 +52,20 @@ class DonationController extends Controller
     public function update(Request $request, Donation $donation)
     {
         $validated = $request->validate([
-            'donor_name' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:1',
-            'payment_method' => 'required|string',
-            'message' => 'nullable|string'
+            'title' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'description' => 'nullable|string',
+            'status' => 'required|boolean'
         ]);
+
+        if ($request->hasFile('image')) {
+            if ($donation->image && Storage::disk('public')->exists($donation->image)) {
+                Storage::disk('public')->delete($donation->image);
+            }
+
+            $path = $request->file('image')->store('donations', 'public');
+            $validated['image'] = $path;
+        }
 
         $donation->update($validated);
 

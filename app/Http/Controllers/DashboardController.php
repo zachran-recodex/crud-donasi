@@ -3,45 +3,46 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donation;
-use Carbon\Carbon;
+use App\Models\DonationTransaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Total donations
-        $totalDonations = Donation::count();
-        $totalAmount = Donation::sum('amount');
+        $donations = Donation::where('status', true)->get();
 
-        // Today's donations
-        $todayDonations = Donation::whereDate('created_at', Carbon::today())->count();
-        $todayAmount = Donation::whereDate('created_at', Carbon::today())->sum('amount');
+        return view('dashboard', compact('donations'));
+    }
 
-        // Monthly statistics
-        $monthlyStats = Donation::select(
-            DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
-            DB::raw('COUNT(*) as count'),
-            DB::raw('SUM(amount) as total_amount')
-        )
-            ->groupBy('month')
-            ->orderBy('month', 'desc')
-            ->limit(6)
-            ->get();
+    public function showDonation(Donation $donation)
+    {
+        $transactions = $donation->transactions()->latest()->get();
 
-        // Payment method distribution
-        $paymentMethodStats = Donation::select('payment_method', DB::raw('COUNT(*) as count'))
-            ->groupBy('payment_method')
-            ->get();
+        return view('donation', compact('donation', 'transactions'));
+    }
 
-        return view('dashboard', compact(
-            'totalDonations',
-            'totalAmount',
-            'todayDonations',
-            'todayAmount',
-            'monthlyStats',
-            'paymentMethodStats'
-        ));
+    public function donate(Request $request, $donationId)
+    {
+        $donation = Donation::findOrFail($donationId);
+
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+        ]);
+
+        // Simpan transaksi donasi
+        $donationTransaction = DonationTransaction::create([
+            'donation_id' => $donation->id,
+            'user_id' => Auth::id(),
+            'amount' => $request->amount,
+        ]);
+
+        // Update total_donated pada tabel Donation
+        $donation->total_donated += $request->amount;
+        $donation->save();
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('donate', ['donation' => $donation])->with('success', 'Terima kasih telah berdonasi!');
     }
 }
