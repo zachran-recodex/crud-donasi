@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Storage;
 
 class PostController extends Controller
@@ -74,5 +76,32 @@ class PostController extends Controller
         $post->delete();
         return redirect()->route('posts.index')
             ->with('success', 'Postingan berhasil dihapus.');
+    }
+
+    public function storeComment(Request $request, Post $post)
+    {
+        $request->validate([
+            'comment' => 'required|string|max:255',
+        ]);
+
+        $post->comments()->create([
+            'user_name' => Auth::user()->name,
+            'comment' => $request->comment,
+        ]);
+
+        return redirect()->route('posts.show', $post)->with('success', 'Komentar berhasil ditambahkan!');
+    }
+
+    public function addReaction(Request $request, Comment $comment)
+    {
+        $request->validate([
+            'reaction' => 'required|string|max:2',
+        ]);
+
+        $comment->reactions()->create([
+            'reaction' => $request->reaction,
+        ]);
+
+        return redirect()->back()->with('success', 'Reaksi berhasil ditambahkan!');
     }
 }

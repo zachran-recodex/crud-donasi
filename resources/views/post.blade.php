@@ -25,18 +25,27 @@
 
                 <div class="mt-6">
                     <h4 class="text-lg font-bold mb-4">Komentar</h4>
-                    @forelse($post->comments as $comment)
+                    @foreach($post->comments as $comment)
                         <div class="mb-4 border-b pb-4">
-                            <p class="text-gray-800"><strong>{{ $comment->user_name }}</strong></p> <!-- Nama Pengguna -->
+                            <p class="text-gray-800"><strong>{{ $comment->user_name }}</strong></p>
                             <p class="text-gray-700">{{ $comment->comment }}</p>
                             <p class="text-sm text-gray-500">{{ $comment->created_at->diffForHumans() }}</p>
+
+                            <div class="flex items-center space-x-4 mt-2">
+                                @foreach(['👍', '❤️', '😂', '😮', '😢'] as $emoji)
+                                    <form action="{{ route('comments.reactions.store', $comment) }}" method="POST">
+                                        @csrf
+
+                                        <input type="hidden" name="reaction" value="{{ $emoji }}">
+                                        <button type="submit" class="text-xl">{{ $emoji }}</button>
+                                    </form>
+                                    <span>{{ $comment->reactions->where('reaction', $emoji)->count() }}</span>
+                                @endforeach
+                            </div>
                         </div>
-                    @empty
-                        <p class="text-gray-500">Belum ada komentar.</p>
-                    @endforelse
+                    @endforeach
                 </div>
 
-                <!-- Form Tambah Komentar -->
                 <div class="mt-6">
                     <h4 class="text-lg font-bold mb-2">Tambahkan Komentar</h4>
                     <form action="{{ route('comments.store', $post) }}" method="POST">

@@ -1,16 +1,16 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DonationController;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
     Route::get('/', [AuthenticatedSessionController::class, 'create'])->name('login');
 });
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -24,7 +24,9 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('posts', PostController::class);
 
-    Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/posts/{post}/comments', [PostController::class, 'storeComment'])->name('comments.store');
+
+    Route::post('/comments/{comment}/reactions', [PostController::class, 'addReaction'])->name('comments.reactions.store');
 });
 
 require __DIR__.'/auth.php';
